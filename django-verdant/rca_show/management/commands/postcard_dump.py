@@ -6,7 +6,7 @@ from django.core.management.base import BaseCommand
 from django.db import models
 from django.conf import settings
 from rca.models import NewStudentPage
-from rca.report_generator import Report
+from rca_show.management.report_generator import Report
 from PIL import Image
 from zipfile import ZipFile
 from optparse import make_option
@@ -101,7 +101,7 @@ class PostcardDumpReport(Report):
         profile = student.get_profile()
         if profile is not None and profile['name'] == "MA":
             return (
-                student.ma_specialism or "Not set",
+                student.get_ma_specialism_display() or "Not set",
                 'error' if not student.ma_specialism else None,
                 None,
             )
@@ -236,6 +236,20 @@ class PostcardDumpReport(Report):
                 None,
             )
 
+    def permission_field(self, student):
+        if student.postcard_image and student.postcard_image.permission:
+            return (
+                student.postcard_image.permission,
+                None,
+                None,
+            )
+        else:
+            return (
+                "Not set" if student.postcard_image else "",
+                'error',
+                None,
+            )
+
     title = "Postcard image dump"
 
     fields = (
@@ -256,6 +270,7 @@ class PostcardDumpReport(Report):
         ("Image Width", width_field),
         ("Image Height", height_field),
         ("Image Colour Format", colour_format_field),
+        ("Image Permission", permission_field),
     )
 
     extra_css = """
