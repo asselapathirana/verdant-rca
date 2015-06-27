@@ -4,7 +4,7 @@
 /venv
 /django-verdant/static
 /django-verdant/media
-/django-verdant/rcasite/settings/local.py
+#/django-verdant/rcasite/settings/local.py
 /django-verdant/celerybeat*
 
 /static/rca/site/assets/css/*.css
